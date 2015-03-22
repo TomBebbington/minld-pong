@@ -1,35 +1,57 @@
 Paddle = {
-    width = 64,
-    height = 16,
-    color = {1.0, 1.0, 1.0}
+    width = 16,
+    height = 64,
+    color = {1.0, 1.0, 1.0},
+    speed = 300,
+    isPaddle = true
 }
 local setColor = love.graphics.setColor;
 local rect = love.graphics.rectangle;
 
-function Paddle.new()
+function Paddle.new(world, align)
+    local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+    local x;
+    if align == "left" or align == -1 then
+        x = Paddle.width / 2
+        align = -1
+    elseif align == "right" or align == 1 then
+        x = w - Paddle.width * 1.5
+        align = 1
+    end
     local this = {
-        x = (love.graphics.getWidth() - Paddle.width) / 2,
-        y = love.graphics.getHeight() - Paddle.height * 2
+        x = x,
+        y = (h - 2 * Paddle.height) / 2,
+        world = world,
+        align = align
     };
     setmetatable(this, {__index = Paddle})
+    world:add(this, this.x, this.y, this.width, this.height)
     return this;
 end
 
 function Paddle:draw()
-    love.graphics.setColor(self.color)
+    setColor(self.color)
     rect("fill", self.x, self.y, self.width, self.height)
 end
 
-local isDown = love.keyboard.isDown;
+function Paddle.filter(item, other)
+    return 'slide'
+end
+
+function Paddle:get_vy()
+    return self:get_direction() * self.speed
+end
+
 function Paddle:update(dt)
-    local dir = 0;
-    if isDown('left') or isDown('a') then
-        dir = -1
-    elseif isDown('right') or isDown('d') then
-        dir = 1
+    local ny = self.y + dt * self:get_vy()
+    if ny < 0 then
+        ny = 0
+    elseif ny + self.height > love.graphics.getHeight() then
+        ny = love.graphics.getHeight() - self.height
     end
-    print(dt, self.x, self.y, self.width, self.height)
-    self.x = self.x + dt * dir * 1000
+    local ax, ay = self.world:move(self, self.x, ny, Paddle.filter)
+    self.x = ax
+    self.y = ay
 end
 
 return Paddle

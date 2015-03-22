@@ -1,23 +1,22 @@
-local bump = require 'bump';
-local Paddle = require 'paddle';
-local world;
-local paddles;
+local play = require 'play'
+local title = require 'title'
+
+function normalise(vx, vy, speed)
+    local length = math.sqrt(vx * vx + vy * vy)
+    local speed_len = speed / length
+    return vx * speed_len, vy * speed_len
+end
+
+function switch_scene(c_scene)
+    scene = c_scene
+    c_scene.load()
+    for i, v in pairs(c_scene) do
+        if i ~= "load" then
+            love[i] = v
+        end
+    end
+end
 
 function love.load()
-    world = bump.newWorld()
-    paddles = { Paddle.new() }
-end
-
-function love.draw()
-    for i = 1, #paddles do
-        paddles[i]:draw()
-    end
-end
-
-function love.update(dt)
-    print("delta", dt);
-    for i = 1, #paddles do
-        local paddle = paddles[i]
-        paddle:update(dt)
-    end
+    switch_scene(title)
 end
