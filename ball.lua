@@ -25,7 +25,7 @@ function Ball:respawn()
     local player = scene.player
     local dir = player.align
     self.speed = Ball.speed * scene.difficulty
-    self.vx, self.vy = normalise(2 * math.random(), math.random(), self.speed)
+    self.vx, self.vy = normalise(math.random() * 2, (math.random() - 0.5), self.speed)
     if player.align == -1 then
         self.x = player.x + player.width
     elseif player.align == 1 then
