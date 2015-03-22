@@ -25,8 +25,7 @@ function Ball:respawn()
     local player = scene.player
     local dir = player.align
     self.speed = Ball.speed * scene.difficulty
-    self.vx, self.vy = normalise(2 * math.random(), math.random(), self.speed);
-    --self.x = player.x + (player.width * (player.align + 1)) / 2
+    self.vx, self.vy = normalise(2 * math.random(), math.random(), self.speed)
     if player.align == -1 then
         self.x = player.x + player.width
     elseif player.align == 1 then
@@ -56,7 +55,7 @@ function Ball:update(dt)
         if other.isPaddle and other ~= self.last_hit and other.align == self.vx / math.abs(self.vx) then
             love.audio.play(Ball.hit:clone())
             self.last_hit = other
-            self.vy = self.vy + self.last_hit:get_vy() / 4
+            self.vy = (self.vy + self.last_hit:get_vy()) / 2
             self.vx, self.vy = normalise(-self.vx, self.vy, self.speed)
             self.x = self.x + self.vx * dt
         end
