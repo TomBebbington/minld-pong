@@ -7,7 +7,7 @@ function Player.new(world)
     setmetatable(self, {__index = Player})
     function scene.keypressed(key, rep)
         if key == 'r' and not rep then
-            restart()
+            scene.restart()
         elseif key == 'p' and not rep then
             paused = not paused
         end

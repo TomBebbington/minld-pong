@@ -18,5 +18,8 @@ function switch_scene(c_scene)
 end
 
 function love.load()
+    font = love.graphics.newFont("font/PressStart2P.ttf", 42)
+    small_font = love.graphics.newFont("font/PressStart2P.ttf", 21)
+    
     switch_scene(title)
 end

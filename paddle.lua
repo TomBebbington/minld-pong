@@ -9,24 +9,31 @@ local setColor = love.graphics.setColor;
 local rect = love.graphics.rectangle;
 
 function Paddle.new(world, align)
-    local w, h = love.graphics.getWidth(), love.graphics.getHeight()
     local x;
-    if align == "left" or align == -1 then
-        x = Paddle.width / 2
+    if align == "left"  then
         align = -1
-    elseif align == "right" or align == 1 then
-        x = w - Paddle.width * 1.5
+    elseif align == "right" then
         align = 1
     end
     local this = {
-        x = x,
-        y = (h - 2 * Paddle.height) / 2,
         world = world,
         align = align
     };
     setmetatable(this, {__index = Paddle})
+    this:respawn()
     world:add(this, this.x, this.y, this.width, this.height)
     return this;
+end
+
+function Paddle:respawn()
+    if self.align == -1 then
+        self.x = Paddle.width / 2
+    elseif self.align == 1 then
+        self.x = love.graphics.getWidth() - Paddle.width * 1.5
+    else
+        print("invalid align")
+    end
+    self.y = (love.graphics.getHeight() - 2 * Paddle.height) / 2
 end
 
 function Paddle:draw()

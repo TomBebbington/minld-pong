@@ -27,7 +27,11 @@ function Ball:respawn()
     self.speed = Ball.speed * scene.difficulty
     self.vx, self.vy = normalise(2 * math.random(), math.random(), self.speed);
     --self.x = player.x + (player.width * (player.align + 1)) / 2
-    self.x = player.x + player.width / 2 + player.align * player.width / 2
+    if player.align == -1 then
+        self.x = player.x + player.width
+    elseif player.align == 1 then
+        self.x = player.x - self.radius * 2
+    end
     self.y = player.y + player.height / 2 - self.radius
     self.last_hit = player
     self.world:update(self, self.x, self.y, self.radius * 2, self.radius * 2)
