@@ -9,7 +9,7 @@ function Player.new(world)
         if key == 'r' and not rep then
             scene.restart()
         elseif key == 'p' and not rep then
-            paused = not paused
+            scene.paused = not scene.paused
         end
     end
 
