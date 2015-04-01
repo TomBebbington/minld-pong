@@ -3,6 +3,8 @@ local Ball = require 'ball';
 local Paddle = require 'paddle';
 local Player = require 'player';
 local Enemy = require 'enemy';
+local Text = require 'text';
+local converse = require 'converse';
 
 local play = {}
 
@@ -16,13 +18,17 @@ function play.load()
     play.enemy = Enemy.new(play.world, 1)
     play.player = Player.new(play.world)
     play.ball = Ball.new(play.world, player)
+    play.talk_turn = 1
+    play.text = Text.new(play.player, converse[play.talk_turn])
     play.add_score(0)
+    play.talk_timer = 0
 end
 
 function play.draw()
     play.ball:draw()
     play.player:draw()
     play.enemy:draw()
+    play.text:draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.setFont(font)
     local text = "Score: "..play.score
@@ -46,6 +52,20 @@ end
 
 function play.update(dt)
     if not paused then
+        play.talk_timer = play.talk_timer + dt
+        if play.talk_timer >= 3 then
+            play.talk_timer = 0
+            play.talk_turn = play.talk_turn + 1
+            if play.talk_turn >= #converse then
+                play.talk_turn = 1
+            end
+            if play.talk_turn % 2 == 1 then
+                play.text.paddle = play.player
+            else
+                play.text.paddle = play.enemy
+            end
+            play.text.text = converse[play.talk_turn]
+        end
         play.ball:update(dt)
         play.player:update(dt)
         play.enemy:update(dt)
